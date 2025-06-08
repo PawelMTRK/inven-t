@@ -1,12 +1,12 @@
 services:
   db:
     build: db
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_DB: app_db
       POSTGRES_USER: app_user
       POSTGRES_PASSWORD: password
+    networks:
+      - back
 
   server:
     image: postgrest/postgrest
@@ -19,3 +19,18 @@ services:
       PGRST_DB_SCHEMA: api
     depends_on:
       - db
+    networks:
+      - back
+      - front
+
+  # TODO enable service
+  # frontend:
+  #   build: frontend
+  #   depends_on:
+  #     - server
+  #   networks:
+  #     - front
+
+networks:
+  front: {}
+  back: {}

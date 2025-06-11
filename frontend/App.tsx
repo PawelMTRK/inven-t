@@ -1,44 +1,43 @@
-import { Text, Box, useInput } from 'ink';
-import React, { useState, useEffect } from 'react';
+import { Box, Text, useInput } from "ink";
+import React, { useEffect, useState } from "react";
 
 export const App = () => {
-  const [data, setData] = useState([1, 2, 3]);
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFailed, setIsFailed] = useState(false);\
 
-  const loadData = async (): boolean => {
+  const loadData = async () => {
     try {
-      let res = await fetch('http://localhost:3000/items')
-      let data = await res.json()
+      const res = await fetch("http://localhost:3000/items");
+      const data = await res.json();
       setData(data);
+      setIsFailed(false);
       setIsLoading(false);
-      return true
     } catch (_e) {
-      return false
+      setIsFailed(true);
     }
-  }
+  };
 
   useEffect(() => {
-    loadData()
-  })
+    loadData();
+  });
 
   useInput((input, key) => {
-    if (input == 'q') {
-      Deno.exit()
+    if (input == "q") {
+      Deno.exit();
+    } else if (input == "r") {
+      loadData();
     }
-    else if (input == 'r') {
-      loadData()
-    }
-  })
+  });
 
-
-  return <Box borderStyle="round" flexDirection="column">
-    {
-      isLoading
-        ? <Text>...</Text>
-        : <>
+  return (
+    <Box borderStyle="round" flexDirection="column">
+      {isLoading || isFailed ? <Text>...</Text> : (
+        <>
           <Text color="green">connected</Text>
-          {data.map(e => <Text key={e.id}>( ) {e.name}</Text>)}
+          {data.map((e) => <Text key={e.id}>( ) {e.name}</Text>)}
         </>
-    }
-  </Box>
-}
+      )}
+    </Box>
+  );
+};

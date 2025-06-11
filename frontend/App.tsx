@@ -1,14 +1,22 @@
 import { Box, Text, useInput } from "ink";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import TabBar from "./TabBar.tsx";
+import { Data, getLabel } from "./model.ts"
 
 export const App = () => {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFailed, setIsFailed] = useState(false);\
+  const url = "http://localhost:3000/";
+  const [data, setData] = useState<Data[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isFailed, setIsFailed] = useState<boolean>(false);
 
-  const loadData = async () => {
+  const onSwitchTab = (name: string) => {
+    setIsLoading(true);
+    loadData(name);
+  };
+
+  const loadData = async (name: string) => {
     try {
-      const res = await fetch("http://localhost:3000/items");
+      const res = await fetch(url + name);
       const data = await res.json();
       setData(data);
       setIsFailed(false);
@@ -18,24 +26,18 @@ export const App = () => {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  });
-
   useInput((input, key) => {
     if (input == "q") {
       Deno.exit();
-    } else if (input == "r") {
-      loadData();
     }
   });
 
   return (
-    <Box borderStyle="round" flexDirection="column">
+    <Box flexDirection="column">
+      <TabBar handleSwitchTab={onSwitchTab} />
       {isLoading || isFailed ? <Text>...</Text> : (
         <>
-          <Text color="green">connected</Text>
-          {data.map((e) => <Text key={e.id}>( ) {e.name}</Text>)}
+          {data.map(e => <Text key={e.id}> - {getLabel(e)}</Text>)}
         </>
       )}
     </Box>

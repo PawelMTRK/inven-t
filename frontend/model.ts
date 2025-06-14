@@ -8,6 +8,7 @@ type Item = {
   id: number
   name: string,
   amount: number,
+  code: string,
   category_id: number
 }
 

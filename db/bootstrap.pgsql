@@ -35,9 +35,26 @@ create table api.orders (
     item_id int references api.items(id)
 );
 
+-- /rpc/complete_order
+create or replace function complete_order(order_id int) returns void as $$
+declare
+    order_amount int;
+    order_it_id int;
+begin
+    -- TODO handle bad order_id
+    order_amount := (select amount from api.orders where id = order_id);
+    order_it_id := (select item_id from api.orders where id = order_id);
+    update api.items
+        set amount = amount + order_amount
+        where id = order_it_id;
+    delete from api.orders
+        where id = order_id;
+end;
+$$ language plpgsql;
+
 -- /categories_info
 create view api.categories_info as
-    select c.name, count(i.name) as total_items
+    select c.name as category, count(i.name) as items, sum(i.amount) as total_items
         from api.items as i
         right join api.categories as c on i.category_id = c.id
         group by c.name;

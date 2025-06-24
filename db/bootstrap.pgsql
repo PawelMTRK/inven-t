@@ -36,19 +36,23 @@ create table api.orders (
 );
 
 -- /rpc/complete_order
-create or replace function complete_order(order_id int) returns void as $$
+create or replace function complete_order(order_id int) returns boolean as $$
 declare
     order_amount int;
     order_it_id int;
 begin
-    -- TODO handle bad order_id
     order_amount := (select amount from api.orders where id = order_id);
+    raise notice 'value %', order_amount;
+    if order_amount is null then
+        return false;
+    end if;
     order_it_id := (select item_id from api.orders where id = order_id);
     update api.items
         set amount = amount + order_amount
         where id = order_it_id;
     delete from api.orders
         where id = order_id;
+    return true;
 end;
 $$ language plpgsql;
 

@@ -3,7 +3,8 @@ import { Box, Text, useInput } from "ink";
 import { Data, getLabel } from "./model.ts";
 
 type SidebarProps = {
-  data: Data[]
+  data: Data[],
+  handleSwitchItem: (id: number) => void
 }
 
 const Sidebar = (props: SidebarProps) => {
@@ -18,6 +19,7 @@ const Sidebar = (props: SidebarProps) => {
     }
     if (id < 0) id = props.data.length - 1
     setItemId(id % props.data.length)
+    props.handleSwitchItem(id % props.data.length)
   })
   
   return <Box borderStyle="round" flexDirection="column" width="30%">

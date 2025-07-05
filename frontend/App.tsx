@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import TabBar from "./TabBar.tsx";
 import { Data } from "./model.ts"
 import Sidebar from "./Sidebar.tsx";
+import Details from "./Details.tsx";
 
 export const App = () => {
   const url = "http://localhost:3000/";
   const [data, setData] = useState<Data[]>([]);
+  const [itemId, setItemId] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFailed, setIsFailed] = useState<boolean>(true);
 
@@ -15,6 +17,10 @@ export const App = () => {
     loadData(name);
   };
 
+  const onSwitchItem = (id: number) => {
+    setItemId(id);
+  }
+
   const loadData = async (name: string) => {
     try {
       const res = await fetch(url + name);
@@ -22,6 +28,8 @@ export const App = () => {
       setData(data);
       setIsFailed(false);
       setIsLoading(false);
+      // this works instead of putting it in onSwitchTab
+      setItemId(0);
     } catch (_e) {
       setIsFailed(true);
     }
@@ -43,7 +51,8 @@ export const App = () => {
     {isLoading
       ? <Text>...</Text>
       : <Box flexDirection="row">
-        <Sidebar data={data} />
+      <Sidebar handleSwitchItem={onSwitchItem} data={data} />
+      <Details item={data[itemId]} />
       </Box>
       }
     </Box>

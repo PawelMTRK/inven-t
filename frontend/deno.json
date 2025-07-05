@@ -1,8 +1,15 @@
 {
-  "imports": {
-    "fetch-retry": "npm:fetch-retry@^6.0.0",
-    "ink": "npm:ink@^6.0.0",
-    "jsx-runtime": "npm:jsx-runtime@^1.2.0",
-    "react": "npm:react@^19.1.0"
-  }
+    "imports": {
+	"fetch-retry": "npm:fetch-retry@^6.0.0",
+	"ink": "npm:ink@^6.0.0",
+	"jsx-runtime": "npm:jsx-runtime@^1.2.0",
+	"react": "npm:react@^19.1.0",
+	"@types/react": "npm:@types/react@^19.1.7"
+    },
+    "compilerOptions": {
+	"types": ["npm:@types/react", "npm:@types/react-dom"]
+    },
+    "tasks": {
+	"run": "deno run --allow-env --allow-net --allow-read --check main.tsx"
+    }
 }

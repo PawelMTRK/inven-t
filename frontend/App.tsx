@@ -1,13 +1,14 @@
 import { Box, Text, useInput } from "ink";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TabBar from "./TabBar.tsx";
-import { Data, getLabel } from "./model.ts"
+import { Data } from "./model.ts"
+import Sidebar from "./Sidebar.tsx";
 
 export const App = () => {
   const url = "http://localhost:3000/";
   const [data, setData] = useState<Data[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isFailed, setIsFailed] = useState<boolean>(false);
+  const [isFailed, setIsFailed] = useState<boolean>(true);
 
   const onSwitchTab = (name: string) => {
     setIsLoading(true);
@@ -26,7 +27,11 @@ export const App = () => {
     }
   };
 
-  useInput((input, key) => {
+  useEffect(() => {
+    loadData("items");
+  }, [])
+  
+  useInput((input, _key) => {
     if (input == "q") {
       Deno.exit();
     }
@@ -34,12 +39,13 @@ export const App = () => {
 
   return (
     <Box flexDirection="column">
-      <TabBar handleSwitchTab={onSwitchTab} />
-      {isLoading || isFailed ? <Text>...</Text> : (
-        <>
-          {data.map(e => <Text key={e.id}> - {getLabel(e)}</Text>)}
-        </>
-      )}
+      {isFailed ? <Text>No connection</Text> : <TabBar handleSwitchTab={onSwitchTab} />}
+    {isLoading
+      ? <Text>...</Text>
+      : <Box flexDirection="row">
+        <Sidebar data={data} />
+      </Box>
+      }
     </Box>
   );
 };

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Box, Text } from "ink";
-import { DataI } from "./model.ts";
 
 type DetailsProps = {
-  item: DataI
+  item: object & {[key: string]: string|number}
 }
 
 const Details = (props: DetailsProps) => {

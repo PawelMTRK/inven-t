@@ -22,11 +22,6 @@ type Order = {
 
 export type Data = Category | Item | Order;
 
-export type DataI =
-  Data & {
-    [key: string]: number|string
-  }
-
 export const getLabel = (data: Data): string => {
   if ("supplier" in data) {
     return data.supplier

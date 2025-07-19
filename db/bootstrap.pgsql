@@ -42,7 +42,6 @@ declare
     order_it_id int;
 begin
     order_amount := (select amount from api.orders where id = order_id);
-    raise notice 'value %', order_amount;
     if order_amount is null then
         return false;
     end if;

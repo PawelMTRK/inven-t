@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, useInput } from "ink";
+import { Box, Text, useFocus, useFocusManager, useInput } from "ink";
 import { Data, getLabel } from "./model.ts";
 
 type SidebarProps = {
@@ -9,8 +9,14 @@ type SidebarProps = {
 
 const Sidebar = (props: SidebarProps) => {
   const [itemId, setItemId] = useState<number>(0);
+  const {isFocused} = useFocus({id: "sidebar"});
+  const {focus} = useFocusManager();
 
   useInput((_input, key) => {
+    if (!isFocused) return;
+    if (key.return) {
+      focus("details");
+    }
     let id = itemId;
     if (key.upArrow) {
       id -= 1;
@@ -22,7 +28,8 @@ const Sidebar = (props: SidebarProps) => {
     props.handleSwitchItem(id % props.data.length)
   })
   
-  return <Box borderStyle="round" flexDirection="column" width="30%">
+  return <Box borderColor={isFocused ? "white" : "gray"} borderStyle="round" flexDirection="column" width="30%">
+    <Text>{isFocused ? "F" : "N" }</Text>
     {props.data.map((e, i) => <Text color={i === itemId ? "white" : "gray"} key={e.id}> {e.id}) {getLabel(e)}</Text>)}
   </Box>
 }

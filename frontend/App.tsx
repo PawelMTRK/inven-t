@@ -11,7 +11,7 @@ export const App = () => {
   const [itemId, setItemId] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFailed, setIsFailed] = useState<boolean>(true);
-
+  
   const onSwitchTab = (name: string) => {
     setIsLoading(true);
     loadData(name);
